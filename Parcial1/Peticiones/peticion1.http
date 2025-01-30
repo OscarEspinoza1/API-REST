@@ -1,0 +1,2 @@
+GET https://jsonplaceholder.typicode.com/todos/1 HTTP/1.1
+## Peticion de jsonplaceholder
