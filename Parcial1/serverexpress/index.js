@@ -1,16 +1,22 @@
-const express = require('express')
-const app = express()
-const port=3000;
+import express from 'express'
+import cors from 'cors';
+import { config } from 'dotenv';
+import path from 'node:path'
+import process from "node:process";
 
-app.get('/',(req,res,next)=>{
-    // res.send('Hello World!');
-    res.sendFile(__dirname+'/index.html')
-});
-/*
-app.post('/',(req,res)=>{
-    res.send('Hello World!');
-});*/
+config({ path: "./config/.env" });
 
-app.listen(port,()=>{
-    console.log(`Server runnning at http://localhost:${port}`);
+const app = express();
+
+app.use(cors({
+    origin: "http://localhost",
+    methods: ["GET", "POST"]
+}));
+
+app.get('/inicio', (_req, res) => {
+    res.sendFile(path.resolve('./public/index.html'));
 });
+
+app.listen(process.env.SERVER_PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${ process.env.SERVER_PORT }`);
+})
