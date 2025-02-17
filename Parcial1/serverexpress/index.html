@@ -3,15 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servidor Express</title>
+    <title>Servidor Express - Subir Archivo</title>
 </head>
 <body>
-    
-Servidor Express Online;
-<script>
-        fetch('http://localhost:3001')
-        .then(response => response.text())
-        .then(data => console.log(data))
+    <h1>Subir Archivo</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" accept=".pdf, image/*">
+        <button type="submit">Subir</button>
+    </form>
+    <p id="status"></p>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files.length) {
+                alert('Por favor, selecciona un archivo.');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            try {
+                const response = await fetch('http://localhost:3000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.text();
+                document.getElementById('status').textContent = result;
+            } catch (error) {
+                console.error('Error al subir el archivo:', error);
+                document.getElementById('status').textContent = 'Error al subir el archivo';
+            }
+        });
     </script>
-        </body>
+</body>
 </html>
