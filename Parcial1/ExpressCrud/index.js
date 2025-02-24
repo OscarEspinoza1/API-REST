@@ -16,8 +16,9 @@ let port = process.env.PORT;
 const connection = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
+    password: 'THICC6722',
     port:'3306',
-    database: 'usuariosCRUD'
+    database: 'usuarios'
 })
 
 // Middleware de registro de solicitudes
