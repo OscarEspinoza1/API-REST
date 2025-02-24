@@ -16,7 +16,6 @@ let port = process.env.PORT;
 const connection = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
-   // password:'',
     port:'3306',
     database: 'usuariosCRUD'
 })
