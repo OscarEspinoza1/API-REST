@@ -39,20 +39,7 @@ app.post('/prefecto', (req, res) => {
     res.send('Got a POST request');
 });
 
-app.post('/', (req, res) => {
-    console.log(req.body);
-    res.send('Got a POST request');
-});
 
-//app.get('/usuario', (req, res) => {
-  //  connection.query(
-  //      'SELECT * FROM `table`',
-  //      function (err, results, fields) {
-  //        console.log(results); 
-  //        console.log(fields); 
-  //      }
-  //    );
-//});
 
 //el metodo get de la base de datos
 app.get('/usuarios', (req, res) => {
