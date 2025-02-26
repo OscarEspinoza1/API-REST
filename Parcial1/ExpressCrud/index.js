@@ -42,33 +42,40 @@ app.post('/prefecto', (req, res) => {
 
 //el metodo get de la base de datos
 app.get('/usuariosCRUD', (req, res) => {
-    console.log(req.query.id_usuario);
-    let consulta = ''
-    if (typeof (req.query.id_usuario) == 'undefined') {
-        consulta = `select * from usuarios`
+    console.log(req.query.id_usuarios);
+
+    let consulta = '';
+    let valores = [];
+
+    if (typeof req.query.id_usuarios === 'undefined') {
+        consulta = `SELECT * FROM usuarios`;
     } else {
-        consulta = `select * from usuarios where id_usuario=${req.query.id_usuario}`
+        consulta = `SELECT * FROM usuarios WHERE id_usuarios = ?`;
+        valores = [req.query.id_usuarios];
     }
+
     console.log(consulta);
 
-    connection.query(
-        consulta,
-        function (err, results, fields) {
-            if (results.length == 0) {
-                res.json({ mensaje: "Este usuario no esta registrado" });
-            }
-            else {
-                res.json(results);
-            }
+    connection.query(consulta, valores, (err, results, fields) => {
+        if (err) {
+            console.error('Error en la consulta:', err);
+            return res.status(500).json({ error: 'Error en la base de datos' });
         }
-    );
+
+        if (!results || results.length === 0) {
+            return res.json({ mensaje: "Este usuario no está registrado" });
+        }
+
+        res.json(results);
+    });
 });
+
 
 //el metodo de modificacion PUT
 app.put('/usuariosCRUD', (req, res) => {
     console.log(req.query);
     let sentenciaSQL = '';
-    if (typeof (req.query.id_usuario) == 'undefined' || typeof (req.query.nombre) == 'undefined' || typeof (req.query.ocupacion) == 'undefined') {
+    if (typeof (req.query.id_usuarios) == 'undefined' || typeof (req.query.nombre) == 'undefined' || typeof (req.query.ocupacion) == 'undefined') {
         res.json({
             status: 0,
             mensaje: "Completa todos los campos por favor",
@@ -76,7 +83,7 @@ app.put('/usuariosCRUD', (req, res) => {
         });
     }
     else {
-        sentenciaSQL = `UPDATE usuarios SET nombre = '${req.query.nombre}',  ocupacion = '${req.query.ocupacion}' WHERE id_usuario = ${req.query.id_usuario}`;
+        sentenciaSQL = `UPDATE usuarios SET nombre = '${req.query.nombre}',  ocupacion = '${req.query.ocupacion}' WHERE id_usuarios = ${req.query.id_usuarios}`;
         console.log(sentenciaSQL);
         connection.query(
             sentenciaSQL,
@@ -102,9 +109,9 @@ app.put('/usuariosCRUD', (req, res) => {
 
 //el metodo delete de la base de datos
 app.delete('/usuariosCRUD', (req, res) => {
-    console.log(req.query.id_usuario);
+    console.log(req.query.id_usuarios);
     let sentenciaSQL = ''
-    if (typeof (req.query.id_usuario) == 'undefined') {
+    if (typeof (req.query.id_usuarios) == 'undefined') {
         res.json({
             status: 0,
             mensaje: "Ingresa el ID de el usuario que deseas borrar",
@@ -112,7 +119,7 @@ app.delete('/usuariosCRUD', (req, res) => {
         });
     }
     else {
-        sentenciaSQL = `DELETE FROM usuarios WHERE id_usuario = ${req.query.id_usuario}`;
+        sentenciaSQL = `DELETE FROM usuarios WHERE id_usuarios = ${req.query.id_usuarios}`;
     }
     console.log(sentenciaSQL);
     connection.query(
