@@ -3,7 +3,7 @@ const path = require('node:path');
 const xmlparser = require('express-xml-bodyparser');
 const multer = require('multer'); 
 const fs = require('node:fs'); 
-const mysql = require('mysql2');
+const mysql2 = require('mysql2');
 const app = require("./init");
 //const port = 3000;
 
@@ -16,9 +16,8 @@ let port = process.env.PORT;
 const connection = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'THICC6722',
-    port:'3306',
-    database: 'usuarios'
+    port:'3309',
+    database: 'usuariosCRUD'
 })
 
 // Middleware de registro de solicitudes
@@ -42,7 +41,7 @@ app.post('/prefecto', (req, res) => {
 
 
 //el metodo get de la base de datos
-app.get('/usuarios', (req, res) => {
+app.get('/usuariosCRUD', (req, res) => {
     console.log(req.query.id_usuario);
     let consulta = ''
     if (typeof (req.query.id_usuario) == 'undefined') {
@@ -66,7 +65,7 @@ app.get('/usuarios', (req, res) => {
 });
 
 //el metodo de modificacion PUT
-app.put('/usuarios', (req, res) => {
+app.put('/usuariosCRUD', (req, res) => {
     console.log(req.query);
     let sentenciaSQL = '';
     if (typeof (req.query.id_usuario) == 'undefined' || typeof (req.query.nombre) == 'undefined' || typeof (req.query.ocupacion) == 'undefined') {
@@ -99,6 +98,43 @@ app.put('/usuarios', (req, res) => {
             }
         )
     }
+});
+
+//el metodo delete de la base de datos
+app.delete('/usuariosCRUD', (req, res) => {
+    console.log(req.query.id_usuario);
+    let sentenciaSQL = ''
+    if (typeof (req.query.id_usuario) == 'undefined') {
+        res.json({
+            status: 0,
+            mensaje: "Ingresa el ID de el usuario que deseas borrar",
+            datos: {}
+        });
+    }
+    else {
+        sentenciaSQL = `DELETE FROM usuarios WHERE id_usuario = ${req.query.id_usuario}`;
+    }
+    console.log(sentenciaSQL);
+    connection.query(
+        sentenciaSQL,
+        function (err, results, fields) {
+            console.log(results);
+            if (results.affectedRows == 1) {
+                res.json({
+                    status: 1,
+                    mensaje: "Usuario eliminado",
+                    datos: {}
+                });
+            }
+            else {
+                res.json({
+                    status: 0,
+                    mensaje: "Este Usuario no esta registrado, intente con otro ID por favor",
+                    datos: {}
+                });
+            }
+        }
+    )
 });
 
 // Configuración de subida de archivos
